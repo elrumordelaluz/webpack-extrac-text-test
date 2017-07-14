@@ -1,0 +1,10 @@
+.text {
+  font-family: var(--system-font);
+  color: var(--text-color);
+}
+
+
+.highlighted {
+  composes: text;
+  color: var(--highlight-color);
+}

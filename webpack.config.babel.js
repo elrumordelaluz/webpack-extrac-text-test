@@ -1,8 +1,13 @@
 import { join, resolve } from 'path'
-const include = join(__dirname, 'src')
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
+
+const include = join(__dirname, 'client')
+const DEBUG = process.env.NODE_ENV !== 'production'
 
 export default {
-  entry: './client',
+  entry: {
+    test: './client',
+  },
   output: {
     path: join(__dirname, 'docs'),
     filename: 'bundle.js',
@@ -13,14 +18,42 @@ export default {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: [resolve(__dirname, './client')],
+        include,
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        exclude: /node_modules/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                importLoaders: 1,
+                localIdentName: `[name]__[local]${DEBUG
+                  ? ''
+                  : '-[hash:base64:4]'}`,
+                minimize: true,
+                discardComments: { removeAll: true },
+              },
+            },
+            'postcss-loader',
+          ],
+        }),
       },
     ],
   },
+
+  plugins: [
+    new ExtractTextPlugin({
+      filename: `[name]${DEBUG ? '' : '.[contenthash]'}.css`,
+      disable: false,
+      allChunks: true,
+      ignoreOrder: true,
+    }),
+  ],
+
   devServer: {
     contentBase: 'docs/',
   },

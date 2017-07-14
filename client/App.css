@@ -1,0 +1,19 @@
+.wrapper {
+  width: 70vw;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  composes: text from './styles/text.css'
+}
+
+.text {
+  composes: text from './styles/text.css';
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.strong {
+  composes: highlighted from './styles/text.css';
+}
